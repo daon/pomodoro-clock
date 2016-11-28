@@ -1,0 +1,38 @@
+.pomodoro {
+    width: 360px;
+    margin: 150px auto;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.controls {
+    position: relative;
+    padding: 50px;
+    background: #eee;
+    border-radius: 50%;
+    border: 5px solid #333;
+}
+
+.clock {
+    font-size: 48px;
+    text-align: center;
+    height: 250px;
+    width: 250px;
+    background: #ccc;
+    border-radius: 50%;
+    line-height: 250px;
+}
+
+.selector {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #333;
+    position: absolute;
+    top: 4px;
+    left: 154px;
+}
+
+.selector:hover {
+    cursor: pointer;
+    background: #ccc;
+}

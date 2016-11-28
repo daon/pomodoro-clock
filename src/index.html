@@ -3,13 +3,23 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Pomodoro Clock</title>
-         <meta name="viewport" content="width=device-width, initial-scale=1">
-
-        <link rel="stylesheet" href="./styles.css">
+        
+        <link href="{%= o.htmlWebpackPlugin.files.css %}" rel="stylesheet">
     </head>
     <body>
 
-        <script src="./bundle.js"></script>
+        <div class="pomodoro">
+            <div class="controls">
+                <div class="clock">
+                    25:00
+                </div>
+                <div class="selector">
+                </div>
+            </div>
+        </div>
+
+        <script src="{%= o.htmlWebpackPlugin.files.js %}"></script>
     </body>
 </html>
