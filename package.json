@@ -9,6 +9,7 @@
   "author": "Dan Andersson <dan.andersson@chimpiq.com> (https://chimpiq.com/)",
   "license": "MIT",
   "dependencies": {
+    "jest-cli": "^17.0.3",
     "webpack": "^1.13.3",
     "webpack-dev-server": "^1.16.2"
   }
