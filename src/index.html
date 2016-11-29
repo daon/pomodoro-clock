@@ -6,10 +6,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Pomodoro Clock</title>
         
-        <link href="{%= o.htmlWebpackPlugin.files.css %}" rel="stylesheet">
+        <link href="<%= htmlWebpackPlugin.files.css %>" rel="stylesheet">
     </head>
     <body>
-
         <div class="pomodoro">
             <div class="controls">
                 <div class="clock">
@@ -20,6 +19,6 @@
             </div>
         </div>
 
-        <script src="{%= o.htmlWebpackPlugin.files.js %}"></script>
+        <script src="<%= htmlWebpackPlugin.files.js %>"></script>
     </body>
 </html>

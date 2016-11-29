@@ -7,16 +7,19 @@
     "type": "git"
   },
   "scripts": {
-    "server:dev": "webpack-dev-server --progress --profile --watch --content-base src/ --inline --hot",
+    "build:dev": "webpack --progress --profile",
+    "server:dev": "webpack-dev-server --progress --profile --watch --content-base dist/ --inline --hot",
     "test": "jest"
   },
   "author": "Dan Andersson <dan.andersson@chimpiq.com> (https://chimpiq.com/)",
   "license": "MIT",
   "dependencies": {
+    "clean-webpack-plugin": "^0.1.14",
     "css-loader": "^0.26.0",
     "extract-text-webpack-plugin": "^1.0.1",
     "html-webpack-plugin": "^2.24.1",
     "jest-cli": "^17.0.3",
+    "raw-loader": "^0.5.1",
     "style-loader": "^0.13.1",
     "to-string-loader": "^1.1.5",
     "webpack": "^1.13.3",

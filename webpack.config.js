@@ -1,30 +1,35 @@
 var path = require('path');
 
-var HtmlWebpackPlugin = require('html-webpack-plugin');
+var HtmlPlugin = require('html-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
-
-var ROOT = path.resolve(__dirname);
+var CleanPlugin = require('clean-webpack-plugin');
 
 module.exports = {
-    entry: './src/main.js',
-    devtool: 'cheap-module-source-map',
+    entry: {
+        pomodoro: path.resolve(__dirname, 'src/main.js')
+    },  
+    devtool: 'source-map',
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'bundle.js',
-        sourceMapFilename: 'bundle.map',
+        filename: '[name].[hash].js',
+        sourceMapFilename: '[name].[hash].map',
     },
     module: {
-        rules: [
+        loaders: [
             {
                 test: /\.css$/,
-                use: ExtractTextPlugin.extract('style-loader', 'css-loader')
+                exclude: /node_modules/,
+                loader: ExtractTextPlugin.extract('style', 'css')
             }
         ]
     },
     plugins: [
-        new ExtractTextPlugin('[name].css'),
-        new HtmlWebpackPlugin({
-            template: 'src/index.html'
+        new CleanPlugin([path.resolve(__dirname, 'dist')]),
+        new ExtractTextPlugin('[name].[hash].css'),
+        new HtmlPlugin({
+            template: path.resolve(__dirname, 'src/index.html'),
+            path: path.resolve(__dirname, 'dist'),
+            inject: false
         })
     ],
     devServer: {
