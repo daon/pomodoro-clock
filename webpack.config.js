@@ -20,6 +20,14 @@ module.exports = {
                 test: /\.css$/,
                 exclude: /node_modules/,
                 loader: ExtractTextPlugin.extract('style', 'css')
+            },
+            {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                loader: 'babel',
+                query: {
+                    presets: ['es2015']
+                }
             }
         ]
     },

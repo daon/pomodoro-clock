@@ -1,38 +1,22 @@
 .pomodoro {
-    width: 360px;
-    margin: 150px auto;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-}
-
-.controls {
-    position: relative;
-    padding: 50px;
-    background: #eee;
-    border-radius: 50%;
-    border: 5px solid #333;
+    width: 300px;
+    margin: 100px auto;
+    font-family: 'Roboto', Verdana, Geneva, Tahoma, sans-serif;
 }
 
 .clock {
-    font-size: 48px;
+    font-size: 50px;
     text-align: center;
-    height: 250px;
-    width: 250px;
-    background: #ccc;
-    border-radius: 50%;
-    line-height: 250px;
-}
-
-.selector {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: #333;
-    position: absolute;
-    top: 4px;
-    left: 154px;
-}
-
-.selector:hover {
+    height: 300px;
+    width: 300px;
+    background: rgba(255, 99, 71, 1);
+    color: #fff;
+    display: block;
+    text-decoration: none;
     cursor: pointer;
-    background: #ccc;
+    border-radius: 50%;
+    line-height: 300px;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+        0 1px 5px 0 rgba(0, 0, 0, 0.12),
+        0 3px 1px -2px rgba(0,0,0, 0.2);
 }
