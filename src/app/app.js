@@ -1,12 +1,10 @@
-const MINUTES_MAX = 59;
-const SECONDS_MAX = 59;
+const COUNTER_MAX = 1500;
 
 var model  = {
-    minutes: MINUTES_MAX,
-    seconds: SECONDS_MAX,
+    counter: COUNTER_MAX,
     started: false,
     launched: false,
-    aborted: false 
+    paused: false 
 };
 
 model.present = (data) => {
@@ -27,6 +25,17 @@ model.present = (data) => {
     state.render(model);
 };
 
+var getMinutes = (counter) => {
+    var minutes = Math.floor(counter/60);
+    return minutes < 10 ? `0${minutes}` : minutes;   
+};
+
+var getSeconds = (counter) => {
+    var seconds = counter % 60;
+    return seconds < 10 ? `0${seconds}` : seconds;
+};
+
+
 var view = {};
 
 view.init = (model) => {
@@ -35,7 +44,7 @@ view.init = (model) => {
 
 view.ready = (model) => {
     return (
-        `<p>mm:ss - ${model.minutes}:${model.seconds}</p>
+        `<p>${getMinutes(model.counter)}:${getSeconds(model.counter)}</p>
         <button type="button" data-action="start">Start</button>
         `
     );
@@ -43,15 +52,17 @@ view.ready = (model) => {
 
 view.counting = (model) => {
     return (
-        `<p>mm:ss - ${model.minutes}:${model.seconds}</p>
-        <button type="button" data-action="abort">Abort</button>
-        `
+        `<p>${getMinutes(model.counter)}:${getSeconds(model.counter)}</p>
+        <button type="button" data-action="pause">Pause</button>
+        <button type="button" data-action="reset">Reset</button>`
     );
 };
 
-view.aborted = (model) => {
+view.paused = (model) => {
     return (
-        `<p>Aborted at mm:ss - ${model.minutes}:${model.seconds}</p>`
+        `<p>Paused at ${getMinutes(model.counter)}:${getSeconds(model.counter)}</p>
+        <button type="button" data-action="start">Start</button>
+        <button type="button" data-action="reset">Reset</button>`
     );
 };
 
