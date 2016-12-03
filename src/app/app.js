@@ -1,29 +1,42 @@
-const COUNTER_MAX = 1500;
+const DEFAULT_SESSION_LENGTH = 5;
+const DEFAULT_BREAK_LENGTH = 5;
 
-var model  = {
-    counter: COUNTER_MAX,
-    started: false,
-    launched: false,
-    paused: false 
+var model  = {};
+
+model.reset = () => {
+    model.sessionLength = DEFAULT_SESSION_LENGTH;
+    model.breakLength = DEFAULT_BREAK_LENGTH;
+    model.time = model.sessionLength;
+    model.sessionStarted = false;
+    model.breakStarted = false;
+    model.paused = false;
 };
 
 model.present = (data) => {
     if (state.counting(model)) {
-        if (model.counter === 0) {
+        if (data.reseted) {
+            model.reset();
+        } else if (model.counter === 0) {
             model.launched = data.launched || false;
         } else {
-            model.aborted = data.aborted || false;
+            model.paused = data.paused || false;
             if (data.counter !== undefined) { 
                 model.counter = data.counter;
             }
         }
-    } else {
-        if (state.ready(model)) {
-            model.started = data.started || false;
+    } else if(state.paused(model)) {
+        if (data.resumed) {
+            model.paused = false;
+        } else if (data.reseted) {
+            model.reset();
         }
+    } else if (state.ready(model)) {
+        model.started = data.started || false;
     }
     state.render(model);
 };
+
+model.reset();
 
 var getMinutes = (counter) => {
     var minutes = Math.floor(counter/60);
@@ -35,7 +48,6 @@ var getSeconds = (counter) => {
     return seconds < 10 ? `0${seconds}` : seconds;
 };
 
-
 var view = {};
 
 view.init = (model) => {
@@ -44,53 +56,59 @@ view.init = (model) => {
 
 view.ready = (model) => {
     return (
-        `<p>${getMinutes(model.counter)}:${getSeconds(model.counter)}</p>
-        <button type="button" data-action="start">Start</button>
+        `<button type="button" class="clock" data-action="start">
+            ${getMinutes(model.counter)}:${getSeconds(model.counter)}
+        </button>
         `
     );
 };
 
 view.counting = (model) => {
     return (
-        `<p>${getMinutes(model.counter)}:${getSeconds(model.counter)}</p>
-        <button type="button" data-action="pause">Pause</button>
-        <button type="button" data-action="reset">Reset</button>`
+        `<button type="button" class="clock" data-action="pause">
+            ${getMinutes(model.counter)}:${getSeconds(model.counter)}
+        </button>
+        `
     );
 };
 
 view.paused = (model) => {
     return (
-        `<p>Paused at ${getMinutes(model.counter)}:${getSeconds(model.counter)}</p>
-        <button type="button" data-action="start">Start</button>
-        <button type="button" data-action="reset">Reset</button>`
+        `<button type="button" class="clock" data-action="resume">
+            ${getMinutes(model.counter)}:${getSeconds(model.counter)}
+        </button>
+        `
     );
 };
 
 view.launched = (model) => {
     return (
-        `<p>Launched</p>`
+        `<button type="button" class="clock" data-action="reset">
+            ${getMinutes(model.counter)}:${getSeconds(model.counter)}
+        </button>
+        `
     );
+};
+
+view.eventHandler = (event) => {
+    let element = event.target;
+
+    if (!element) {
+        return;
+    };
+
+    if (element.hasAttribute('data-action')) {
+        let action = element.getAttribute('data-action');
+        actions[action]({});
+    }
 };
 
 view.display = (representation) => {
     let stateRepresentation = document.getElementById("representation");
-    stateRepresentation.addEventListener('click', (event) => {
-        let element = event.target;
-
-        if (!element) {
-            return;
-        };
-
-        if (element.hasAttribute('data-action')) {
-            let action = element.getAttribute('data-action');
-            return actions[action]({});
-        }
-
-    }, false);
-
     stateRepresentation.innerHTML = representation;
 };
 
+document.addEventListener('click', view.eventHandler, false);
 view.display(view.init(model));
 
 var state = { view: view };
@@ -104,45 +122,68 @@ state.representation = (model) => {
         representation = state.view.ready(model);
     }
 
-    if (state.counting(model)) {
+    if (state.working(model)) {
         representation = state.view.counting(model);
     }
 
-    if (state.launched(model)) {
+    if (state.resting(model)) {
         representation = state.view.launched(model);
     }
 
-    if (state.aborted(model)) {
-        representation = state.view.aborted(model);
+    if (state.paused(model)) {
+        representation = state.view.paused(model);
     }
 
     state.view.display(representation);
 };
 
 state.ready = (model) => {
-    return ((model.counter === COUNTER_MAX) && !model.started && !model.launched && !model.aborted);
+    return ((model.timer === model.sessionLength) && 
+    !model.sessionStarted && 
+    !model.breakStarted && 
+    !model.paused);
 };
 
-state.counting = (model) => {
-    return ((model.counter <= COUNTER_MAX) && (model.counter >= 0) && model.started && !model.launched && !model.aborted);
+state.working = (model) => {
+    return ((model.timer <= model.sessionLength) && 
+    (model.timer >= 0) && 
+    model.sessionStarted && 
+    !model.breakStarted && 
+    !model.paused);
 };
 
-state.launched = (model) => {
-    return ((model.counter === 0) && model.started && model.launched && !model.aborted);
+state.resting = (model) => {
+    return ((model.timer <= model.breakLength) && 
+    (model.timer >= 0) && 
+    model.sessionStarted && 
+    model.breakStarted && 
+    !model.paused);
 };
 
-state.aborted = (model) => {
-    return ((model.counter <= COUNTER_MAX) && (model.counter >= 0) && model.started && !model.launched && model.aborted);
+state.sessionPaused = (model) => {
+    return ((model.timer <= model.sessionLength) && 
+    (model.timer >= 0) && 
+    model.sessionStarted &&
+    !model.breakStarted &&
+    model.paused);
+};
+
+state.breakPaused = (model) => {
+    return ((model.timer <= model.breakLength) && 
+    (model.timer >= 0) && 
+    model.sessionStarted &&
+    model.breakStarted &&
+    model.paused);
 };
 
 state.nextAction = (model) => {
-    if (state.counting(model)) {
-        if (model.counter > 0) {
-            actions.decrement({ counter: model.counter }, model.present);
+    if (state.working(model)) {
+        if (model.timer > 0) {
+            actions.decrement({ timer: model.timer }, model.present);
         }
 
-        if (model.counter === 0) {
-            actions.launch({}, model.present);
+        if (model.timer === 0) {
+            actions.reset({}, model.present);
         }
     }
 };
@@ -164,25 +205,32 @@ actions.start = (data, present) => {
 actions.decrement = (data, present) => {
     present = present || model.present;
     data = data || {};
-    data.counter = data.counter || 10;
+    data.timer = data.timer || 10;
     let d = data;
     let p = present;
     setTimeout(() => {
-        d.counter = d.counter - 1;
+        d.timer = d.timer - 1;
         p(d);
     }, 1000);
 };
 
-actions.launch = (data, present) => {
+actions.pause = (data, present) => {
     present = present || model.present;
-    data.launched = true;
+    data.paused = true;
     present(data);
     return false;
 };
 
-actions.abort = (data, present) => {
+actions.resume = (data, present) => {
     present = present || model.present;
-    data.aborted = true;
+    data.resumed = true;
+    present(data);
+    return false;
+};
+
+actions.reset = (data, present) => {
+    present = present || model.present;
+    data.reseted = true;
     present(data);
     return false;
 };
