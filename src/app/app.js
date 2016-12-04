@@ -6,22 +6,32 @@ var model  = {};
 model.reset = () => {
     model.sessionLength = DEFAULT_SESSION_LENGTH;
     model.breakLength = DEFAULT_BREAK_LENGTH;
-    model.time = model.sessionLength;
+    model.currentTime = model.sessionLength;
     model.sessionStarted = false;
     model.breakStarted = false;
     model.paused = false;
 };
 
 model.present = (data) => {
-    if (state.counting(model)) {
+    if (state.working(model)) {
         if (data.reseted) {
             model.reset();
-        } else if (model.counter === 0) {
-            model.launched = data.launched || false;
+        } else if (model.currentTime === 0) {
+            model.breakStarted = data.breakStarted || false;
+            model.currentTime = data.currentTime || 0;
         } else {
             model.paused = data.paused || false;
-            if (data.counter !== undefined) { 
-                model.counter = data.counter;
+            if (data.currentTime !== undefined) { 
+                model.currentTime = data.currentTime;
+            }
+        }
+    } else if(state.resting(model)) {
+        if (data.reseted) {
+            model.reset();
+        } else {
+            model.paused = data.paused || false;
+            if (data.currentTime !== undefined) { 
+                model.currentTime = data.currentTime;
             }
         }
     } else if(state.paused(model)) {
@@ -31,22 +41,12 @@ model.present = (data) => {
             model.reset();
         }
     } else if (state.ready(model)) {
-        model.started = data.started || false;
+        model.sessionStarted = data.sessionStarted || false;
     }
     state.render(model);
 };
 
 model.reset();
-
-var getMinutes = (counter) => {
-    var minutes = Math.floor(counter/60);
-    return minutes < 10 ? `0${minutes}` : minutes;   
-};
-
-var getSeconds = (counter) => {
-    var seconds = counter % 60;
-    return seconds < 10 ? `0${seconds}` : seconds;
-};
 
 var view = {};
 
@@ -54,19 +54,42 @@ view.init = (model) => {
     return view.ready(model);
 };
 
+
+view.minutes = (model) => {
+    var minutes = Math.floor(model.currentTime/60);
+    return minutes < 10 ? `0${minutes}` : minutes;   
+};
+
+view.seconds = (model) => {
+    var seconds = model.currentTime % 60;
+    return seconds < 10 ? `0${seconds}` : seconds;
+};
+
 view.ready = (model) => {
     return (
-        `<button type="button" class="clock" data-action="start">
-            ${getMinutes(model.counter)}:${getSeconds(model.counter)}
+        `<button type="button" class="clock" data-action="work">
+            Session 
+            ${view.minutes(model)}:${view.seconds(model)}
         </button>
         `
     );
 };
 
-view.counting = (model) => {
+view.working = (model) => {
     return (
         `<button type="button" class="clock" data-action="pause">
-            ${getMinutes(model.counter)}:${getSeconds(model.counter)}
+            Session
+            ${view.minutes(model)}:${view.seconds(model)}
+        </button>
+        `
+    );
+};
+
+view.resting = (model) => {
+    return (
+        `<button type="button" class="clock" data-action="pause">
+            Break<br/>
+            ${view.minutes(model)}:${view.seconds(model)}
         </button>
         `
     );
@@ -75,16 +98,8 @@ view.counting = (model) => {
 view.paused = (model) => {
     return (
         `<button type="button" class="clock" data-action="resume">
-            ${getMinutes(model.counter)}:${getSeconds(model.counter)}
-        </button>
-        `
-    );
-};
-
-view.launched = (model) => {
-    return (
-        `<button type="button" class="clock" data-action="reset">
-            ${getMinutes(model.counter)}:${getSeconds(model.counter)}
+            Pause<br/>
+            ${view.minutes(model)}:${view.seconds(model)}
         </button>
         `
     );
@@ -98,8 +113,14 @@ view.eventHandler = (event) => {
     };
 
     if (element.hasAttribute('data-action')) {
-        let action = element.getAttribute('data-action');
-        actions[action]({});
+        let actionName = element.getAttribute('data-action');
+        let action = actions[actionName];
+        if (action === undefined) {
+            console.error(`Action with name: ${actionName} is not available.`);
+            return;
+        }
+        
+        action({});
     }
 };
 
@@ -123,11 +144,11 @@ state.representation = (model) => {
     }
 
     if (state.working(model)) {
-        representation = state.view.counting(model);
+        representation = state.view.working(model);
     }
 
     if (state.resting(model)) {
-        representation = state.view.launched(model);
+        representation = state.view.resting(model);
     }
 
     if (state.paused(model)) {
@@ -138,51 +159,51 @@ state.representation = (model) => {
 };
 
 state.ready = (model) => {
-    return ((model.timer === model.sessionLength) && 
+    return ((model.currentTime === model.sessionLength) && 
     !model.sessionStarted && 
     !model.breakStarted && 
     !model.paused);
 };
 
 state.working = (model) => {
-    return ((model.timer <= model.sessionLength) && 
-    (model.timer >= 0) && 
+    return ((model.currentTime <= model.sessionLength) && 
+    (model.currentTime >= 0) && 
     model.sessionStarted && 
     !model.breakStarted && 
     !model.paused);
 };
 
 state.resting = (model) => {
-    return ((model.timer <= model.breakLength) && 
-    (model.timer >= 0) && 
+    return ((model.currentTime <= model.breakLength) && 
+    (model.currentTime >= 0) && 
     model.sessionStarted && 
     model.breakStarted && 
     !model.paused);
 };
 
-state.sessionPaused = (model) => {
-    return ((model.timer <= model.sessionLength) && 
-    (model.timer >= 0) && 
+state.paused = (model) => {
+    return ((((model.currentTime <= model.sessionLength) && !model.breakStarted) ||
+    ((model.currentTime <= model.breakLength) && model.breakStarted)) &&  
+    (model.currentTime >= 0) && 
     model.sessionStarted &&
-    !model.breakStarted &&
-    model.paused);
-};
-
-state.breakPaused = (model) => {
-    return ((model.timer <= model.breakLength) && 
-    (model.timer >= 0) && 
-    model.sessionStarted &&
-    model.breakStarted &&
     model.paused);
 };
 
 state.nextAction = (model) => {
     if (state.working(model)) {
-        if (model.timer > 0) {
-            actions.decrement({ timer: model.timer }, model.present);
+        if (model.currentTime > 0) {
+            actions.decrement({ currentTime: model.currentTime }, model.present);
         }
 
-        if (model.timer === 0) {
+        if (model.currentTime === 0) {
+            actions.rest({}, model.present);
+        }
+    } else if (state.resting(model)) {
+        if (model.currentTime > 0) {
+            actions.decrement({ currentTime: model.currentTime }, model.present);
+        }
+
+        if (model.currentTime === 0) {
             actions.reset({}, model.present);
         }
     }
@@ -195,21 +216,29 @@ state.render = (model) => {
 
 var actions = {};
 
-actions.start = (data, present) => {
+actions.work = (data, present) => {
     present = present || model.present;
-    data.started = true;
+    data.sessionStarted = true;
     present(data);
     return false;
 };
 
+actions.rest = (data, present) => {
+    present = present || model.present;
+    data.breakStarted = true;
+    data.currentTime = model.breakLength;
+    present(data);
+    return false;
+}
+
 actions.decrement = (data, present) => {
     present = present || model.present;
     data = data || {};
-    data.timer = data.timer || 10;
+    data.currentTime = data.currentTime || 10;
     let d = data;
     let p = present;
     setTimeout(() => {
-        d.timer = d.timer - 1;
+        d.currentTime = d.currentTime - 1;
         p(d);
     }, 1000);
 };
