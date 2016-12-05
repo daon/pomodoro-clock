@@ -1,12 +1,22 @@
 .pomodoro {
     width: 280px;
-    margin: 100px auto;
+    margin: 0 auto;
     font-family: 'Roboto', Verdana, Geneva, Tahoma, sans-serif;
+    text-align: center;
+}
+
+.settings {
+    margin-bottom: 20px;
+    text-transform: uppercase;
+}
+
+h2 {
+    margin: 0;
+    font-weight: normal;
 }
 
 .clock {
     font-size: 50px;
-    text-align: center;
     height: 280px;
     width: 280px;
     background: rgba(255, 99, 71, 1);

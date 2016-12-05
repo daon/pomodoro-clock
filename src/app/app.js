@@ -1,4 +1,4 @@
-const DEFAULT_SESSION_LENGTH = 5;
+const DEFAULT_SESSION_LENGTH = 25;
 const DEFAULT_BREAK_LENGTH = 5;
 
 var model  = {};
@@ -6,7 +6,7 @@ var model  = {};
 model.reset = () => {
     model.sessionLength = DEFAULT_SESSION_LENGTH;
     model.breakLength = DEFAULT_BREAK_LENGTH;
-    model.currentTime = model.sessionLength;
+    model.currentTime = model.sessionLength*60;
     model.sessionStarted = false;
     model.breakStarted = false;
     model.paused = false;
@@ -67,7 +67,22 @@ view.seconds = (model) => {
 
 view.ready = (model) => {
     return (
-        `<button type="button" class="clock" data-action="work">
+        `
+        <div class="settings">
+            <section>
+                <h2>Break Length</h2>
+                <button type="button" data-action="decrementBreakLength">-</button>
+                <span>${model.breakLength}</span>
+                <button type="button" data-action="incrementBreakLength">+</button>
+            </section>
+            <section>
+                <h2>Session Length</h2>
+                <button type="button" data-action="decrementSessionLength">-</button>
+                <span>${model.sessionLength}</span>
+                <button type="button" data-action="incrementSessionLength">+</button>
+            </section>
+        </div>
+        <button type="button" class="clock" data-action="work">
             Session 
             ${view.minutes(model)}:${view.seconds(model)}
         </button>
