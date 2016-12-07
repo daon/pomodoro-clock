@@ -6,15 +6,13 @@ const DEFAULT_BREAK_LENGTH = 5;
 export var model = {
     sessionLength: DEFAULT_SESSION_LENGTH,
     breakLength: DEFAULT_BREAK_LENGTH,
-    currentTime: model.sessionLength * 60,
+    currentTime: DEFAULT_SESSION_LENGTH * 60,
     sessionStarted: false,
     breakStarted: false,
     paused: false
 };
 
-model.init = (state) => {
-    model.state = state;
-};
+model.init = (state) => model.state = state;
 
 model.present = (data) => {
     if (model.state.working(model)) {
