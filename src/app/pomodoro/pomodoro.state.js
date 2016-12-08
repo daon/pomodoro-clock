@@ -5,7 +5,10 @@ export var state = {};
 state.init = (view) => state.view = view;
 
 state.representation = (model) => {
-    var representation = 'oops... something went wrong, the system is in a invalid state.';
+    var representation = { 
+        alert: 'oops... something went wrong, the system is in a invalid state.'
+    };
+
     if (state.ready(model)) {
         representation = state.view.ready(model);
     }
@@ -59,7 +62,7 @@ state.paused = (model) => {
 state.nextAction = (model) => {
     if (state.working(model)) {
         if (model.currentTime > 0) {
-            actions.decrement({ currentTime: model.currentTime }, model.present);
+            actions.decrementTime({ currentTime: model.currentTime }, model.present);
         }
 
         if (model.currentTime === 0) {
@@ -67,7 +70,7 @@ state.nextAction = (model) => {
         }
     } else if (state.resting(model)) {
         if (model.currentTime > 0) {
-            actions.decrement({ currentTime: model.currentTime }, model.present);
+            actions.decrementTime({ currentTime: model.currentTime }, model.present);
         }
 
         if (model.currentTime === 0) {

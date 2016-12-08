@@ -10,8 +10,12 @@
         <link href="<%= htmlWebpackPlugin.files.css %>" rel="stylesheet">
     </head>
     <body>
-        <div class="pomodoro" id="representation">
-            <button type="button" class="clock">25:00</a>
+        <div class="pomodoro">
+            <div id="alert"></div>
+
+            <div id="settings"></div>
+
+            <div id="timer"></div>
         </div>
 
         <script src="<%= htmlWebpackPlugin.files.js %>"></script>

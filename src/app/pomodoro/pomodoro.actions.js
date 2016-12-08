@@ -1,3 +1,5 @@
+import { DEFAULT_BREAK_LENGTH, DEFAULT_SESSION_LENGTH } from './pomodoro.model'
+
 export var actions = {};
 
 actions.init = (present) => actions.present = present;
@@ -16,16 +18,48 @@ actions.rest = (data, present) => {
     return false;
 }
 
-actions.decrement = (data, present) => {
+actions.decrementTime = (data, present) => {
     present = present || actions.present;
     data = data || {};
-    data.currentTime = data.currentTime || 10;
+    data.currentTime = data.currentTime || DEFAULT_SESSION_LENGTH * 60;
     let d = data;
     let p = present;
     setTimeout(() => {
         d.currentTime = d.currentTime - 1;
         p(d);
     }, 1000);
+};
+
+actions.decrementBreakLength = (data, present) => {
+    present = present || actions.present;
+    data = data || {};
+    data.breakLength = data.breakLength || DEFAULT_BREAK_LENGTH;
+    data.breakLength = data.breakLength - 1;
+    present(data);
+};
+
+actions.incrementBreakLength = (data, present) => {
+    present = present || actions.present;
+    data = data || {};
+    data.breakLength = data.breakLength || DEFAULT_BREAK_LENGTH;
+    data.breakLength = data.breakLength + 1;
+    present(data);
+};
+
+actions.decrementSessionLength = (data, present) => {
+    present = present || actions.present;
+    data = data || {};
+    data.sessionLength = data.sessionLength || DEFAULT_SESSION_LENGTH;
+    data.sessionLength = data.sessionLength - 1;
+    present(data);
+};
+
+actions.incrementSessionLength = (data, present) => {
+    present = present || actions.present;
+    data = data || {};
+    data.sessionLength = data.sessionLength || DEFAULT_SESSION_LENGTH;
+    data.sessionLength = data.sessionLength + 1;
+    present(data);
 };
 
 actions.pause = (data, present) => {
@@ -47,23 +81,4 @@ actions.reset = (data, present) => {
     data.reseted = true;
     present(data);
     return false;
-};
-
-actions.eventHandler = (event) => {
-    let element = event.target;
-
-    if (!element) {
-        return;
-    };
-
-    if (element.hasAttribute('data-action')) {
-        let actionName = element.getAttribute('data-action');
-        let action = actions[actionName];
-        if (action === undefined) {
-            console.error(`Action with name: ${actionName} is not available.`);
-            return;
-        }
-        
-        action({});
-    }
 };

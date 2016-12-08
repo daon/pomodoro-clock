@@ -1,7 +1,9 @@
 'use strict';
 
-const DEFAULT_SESSION_LENGTH = 25;
-const DEFAULT_BREAK_LENGTH = 5;
+export const MIN_SESSION_LENGTH = 0;
+export const MAX_SESSION_LENGTH = 60;
+export const DEFAULT_SESSION_LENGTH = 25;
+export const DEFAULT_BREAK_LENGTH = 5;
 
 export var model = {
     sessionLength: DEFAULT_SESSION_LENGTH,
@@ -36,6 +38,13 @@ model.present = (data) => {
         }
     } else if (model.state.ready(model)) {
         model.sessionStarted = data.sessionStarted || false;
+        if (data.breakLength > MIN_SESSION_LENGTH && data.breakLength <= MAX_SESSION_LENGTH) {
+            model.breakLength = data.breakLength;
+        }
+        if (data.sessionLength > MIN_SESSION_LENGTH && data.sessionLength <= MAX_SESSION_LENGTH) {
+            model.sessionLength = data.sessionLength;
+            model.currentTime = data.sessionLength * 60;
+        }
     }
     model.state.render(model);
 };
