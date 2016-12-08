@@ -7,5 +7,7 @@ state.init(view);
 model.init(state);
 actions.init(model.present);
 
-document.addEventListener('click', actions.eventHandler, false);
+// document.addEventListener('click', actions.eventHandler, false);
 view.display(view.init(model)); 
+
+window.actions = actions;

@@ -13,6 +13,8 @@ module.exports = {
         path: path.resolve(__dirname, 'dist'),
         filename: '[name].[hash].js',
         sourceMapFilename: '[name].[hash].map',
+        library: 'pomodoro',
+        libraryTarget: 'var'
     },
     module: {
         loaders: [

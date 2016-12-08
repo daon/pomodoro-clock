@@ -31,7 +31,7 @@ view.ready = (model) => {
                 <button type="button" data-action="incrementSessionLength">+</button>
             </section>
         </div>
-        <button type="button" class="clock" data-action="work">
+        <button type="button" class="clock" onclick="actions.work({})">
             Session 
             ${view.minutes(model)}:${view.seconds(model)}
         </button>
@@ -41,7 +41,7 @@ view.ready = (model) => {
 
 view.working = (model) => {
     return (
-        `<button type="button" class="clock" data-action="pause">
+        `<button type="button" class="clock" onclick="actions.pause({})">
             Session
             ${view.minutes(model)}:${view.seconds(model)}
         </button>
@@ -51,7 +51,7 @@ view.working = (model) => {
 
 view.resting = (model) => {
     return (
-        `<button type="button" class="clock" data-action="pause">
+        `<button type="button" class="clock" onclick="actions.pause({})">
             Break<br/>
             ${view.minutes(model)}:${view.seconds(model)}
         </button>
@@ -61,7 +61,7 @@ view.resting = (model) => {
 
 view.paused = (model) => {
     return (
-        `<button type="button" class="clock" data-action="resume">
+        `<button type="button" class="clock" onclick="actions.resume({})">
             Pause<br/>
             ${view.minutes(model)}:${view.seconds(model)}
         </button>
