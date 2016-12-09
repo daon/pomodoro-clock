@@ -46,5 +46,13 @@ model.present = (data) => {
             model.currentTime = data.sessionLength * 60;
         }
     }
+    if (data.reseting) {
+        model.sessionLength = DEFAULT_SESSION_LENGTH;
+        model.breakLength = DEFAULT_BREAK_LENGTH;
+        model.currentTime = DEFAULT_SESSION_LENGTH * 60;
+        model.sessionStarted = false;
+        model.breakStarted = false;
+        model.paused = false;
+    }
     model.state.render(model);
 };

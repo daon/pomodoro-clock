@@ -78,7 +78,7 @@ actions.resume = (data, present) => {
 
 actions.reset = (data, present) => {
     present = present || actions.present;
-    data.reseted = true;
+    data.reseting = true;
     present(data);
     return false;
 };

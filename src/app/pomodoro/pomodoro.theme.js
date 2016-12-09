@@ -13,6 +13,7 @@ theme.seconds = (time) => {
 theme.settings = function({ breakLength, sessionLength }) {
     return (`
         <div class="settings">
+            <button type="button" onclick="actions.reset({})">Reset</button>
             <section>
                 <h2>Break Length</h2>
                 <button type="button" onclick="actions.decrementBreakLength({ breakLength: ${breakLength} })">-</button>
