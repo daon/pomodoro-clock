@@ -14,6 +14,7 @@ actions.work = (data, present) => {
 actions.rest = (data, present) => {
     present = present || actions.present;
     data.breakStarted = true;
+    data.currentTime = data.currentTime || DEFAULT_BREAK_LENGTH * 60;
     present(data);
     return false;
 }

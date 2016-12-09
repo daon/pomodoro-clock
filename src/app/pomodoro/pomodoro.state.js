@@ -66,7 +66,7 @@ state.nextAction = (model) => {
         }
 
         if (model.currentTime === 0) {
-            actions.rest({}, model.present);
+            actions.rest({ currentTime: model.breakLength * 60 }, model.present);
         }
     } else if (state.resting(model)) {
         if (model.currentTime > 0) {
