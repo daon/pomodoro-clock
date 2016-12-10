@@ -1,17 +1,66 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
 .pomodoro {
     width: 280px;
-    margin: 0 auto;
+    margin: 40px auto;
     font-family: 'Roboto', Verdana, Geneva, Tahoma, sans-serif;
     text-align: center;
 }
 
 .settings {
-    margin-bottom: 20px;
+    margin-bottom: 20px;    
+}
+
+.settings header {
+    text-align: left;
+    border-bottom: 1px solid #eee;;
+    padding: 5px;
+}
+
+.settings section {
+    margin-bottom: 5px;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.settings section:last-child {
+    border-bottom: none;
+}
+
+.label {
+    padding: 0 10px;
+}
+
+.btn {
+    font-size: 1em;
     text-transform: uppercase;
+    border: 0;
+    background: #efefef;
+    border-radius: 4px;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background: #ccc;
+}
+
+.btn.btn-round {
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+}
+
+.btn.btn-justify {
+    width: 100%;
 }
 
 h2 {
-    margin: 0;
+    margin: 0 0 10px 0;
     font-weight: normal;
 }
 

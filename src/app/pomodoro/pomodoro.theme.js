@@ -13,18 +13,24 @@ theme.seconds = (time) => {
 theme.settings = function({ breakLength, sessionLength }) {
     return (`
         <div class="settings">
-            <button type="button" onclick="actions.reset({})">Reset</button>
+            <header>
+                <span class="title">Settings</span>
+                <button type="button">Hide</button>
+            </header>
             <section>
                 <h2>Break Length</h2>
-                <button type="button" onclick="actions.decrementBreakLength({ breakLength: ${breakLength} })">-</button>
-                <span>${breakLength}</span>
-                <button type="button" onclick="actions.incrementBreakLength({ breakLength: ${breakLength} })">+</button>
+                <button type="button" onclick="actions.decrementBreakLength({ breakLength: ${breakLength} })" class="btn btn-round">-</button>
+                <span class="label">${breakLength}</span>
+                <button type="button" onclick="actions.incrementBreakLength({ breakLength: ${breakLength} })" class="btn btn-round">+</button>
             </section>
             <section>
                 <h2>Session Length</h2>
-                <button type="button" onclick="actions.decrementSessionLength({ sessionLength: ${sessionLength} })">-</button>
-                <span>${sessionLength}</span>
-                <button type="button" onclick="actions.incrementSessionLength({ sessionLength: ${sessionLength} })">+</button>
+                <button type="button" onclick="actions.decrementSessionLength({ sessionLength: ${sessionLength} })" class="btn btn-round">-</button>
+                <span class="label">${sessionLength}</span>
+                <button type="button" onclick="actions.incrementSessionLength({ sessionLength: ${sessionLength} })" class="btn btn-round">+</button>
+            </section>
+            <section>
+                <button type="button" onclick="actions.reset({})" class="btn btn-justify">Reset</button>
             </section>
         </div>
     `);
