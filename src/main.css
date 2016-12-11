@@ -11,13 +11,30 @@ body {
 }
 
 .settings {
+    max-height:  500px;
     margin-bottom: 20px;    
 }
 
-.settings header {
+.show {
+    max-height: 500px;
+    -webkit-transition: max-height 0.8s;
+	-moz-transition: max-height 0.8s;
+	transition: max-height 0.8s;
+}
+
+.hide {
+    max-height: 0;
+    overflow: hidden;
+    -webkit-transition: max-height 0.8s;
+	-moz-transition: max-height 0.8s;
+	transition: max-height 0.8s;
+}
+
+.settings-header {
     text-align: left;
     border-bottom: 1px solid #eee;;
     padding: 5px;
+    position: relative;
 }
 
 .settings section {
@@ -57,6 +74,17 @@ body {
 
 .btn.btn-justify {
     width: 100%;
+}
+
+.btn.btn-sm {
+    font-size: 0.8em;
+    padding: 5px;
+}
+
+.pull-right {
+    position: absolute;
+    right: 0;
+    top: 0; 
 }
 
 h2 {

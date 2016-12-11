@@ -10,13 +10,16 @@ theme.seconds = (time) => {
     return seconds < 10 ? `0${seconds}` : seconds;
 };
 
-theme.settings = function({ breakLength, sessionLength }) {
+theme.settings = function({ breakLength, sessionLength, showSettings }) {
+    let toggleClass = showSettings ? 'show' : 'hide';
+    let toggleTitle = showSettings ? 'Hide' : 'Show';
+
     return (`
-        <div class="settings">
-            <header>
-                <span class="title">Settings</span>
-                <button type="button">Hide</button>
-            </header>
+        <div class="settings-header">
+            <span class="title">Settings</span>
+            <button type="button" onclick="actions.toggleSettings({ showSettings: ${showSettings} })" class="btn btn-sm  pull-right">${toggleTitle}</button>
+        </div>
+        <div class="settings ${toggleClass}">
             <section>
                 <h2>Break Length</h2>
                 <button type="button" onclick="actions.decrementBreakLength({ breakLength: ${breakLength} })" class="btn btn-round">-</button>

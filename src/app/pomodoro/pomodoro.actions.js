@@ -65,6 +65,7 @@ actions.incrementSessionLength = (data, present) => {
 
 actions.pause = (data, present) => {
     present = present || actions.present;
+    data = data || {};
     data.paused = true;
     present(data);
     return false;
@@ -72,10 +73,19 @@ actions.pause = (data, present) => {
 
 actions.resume = (data, present) => {
     present = present || actions.present;
+    data = data || {};
     data.resumed = true;
     present(data);
     return false;
 };
+
+actions.toggleSettings = (data, present) => {
+    present = present || actions.present;
+    data = data || {};
+    data.showSettings = data.showSettings || false;
+    present(data);
+    return false;
+}
 
 actions.reset = (data, present) => {
     present = present || actions.present;

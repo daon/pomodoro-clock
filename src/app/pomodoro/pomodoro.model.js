@@ -11,7 +11,8 @@ export var model = {
     currentTime: DEFAULT_SESSION_LENGTH * 60,
     sessionStarted: false,
     breakStarted: false,
-    paused: false
+    paused: false,
+    showSettings: false
 };
 
 model.init = (state) => model.state = state;
@@ -54,5 +55,10 @@ model.present = (data) => {
         model.breakStarted = false;
         model.paused = false;
     }
+    
+    if (data.showSettings !== undefined && model.showSettings !== data.showSettings) {
+        model.showSettings = data.showSettings;
+    }
+
     model.state.render(model);
 };
